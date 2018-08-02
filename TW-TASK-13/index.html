@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
+		<link rel="stylesheet" href="css/bootstrap.css">
+		<script type="text/javascript" src="js/main.js"></script>
+		<title>学生成绩管理</title>
+		<style type="text/css">
+			
+			body,ol,ul,h1,h2,h3,h4,h5,h6,p,th,td,dl,dd,form,fieldset,legend,input,textarea,select{margin:0;padding:0} 
+			body{font:12px"宋体","Arial Narrow",HELVETICA;background:#fff;-webkit-text-size-adjust:100%;} 
+			a{color:#2d374b;text-decoration:none} 
+			a:hover{color:#cd0200;text-decoration:underline} 
+			em{font-style:normal} 
+			li{list-style:none} 
+			img{border:0;vertical-align:middle} 
+			table{border-collapse:collapse;border-spacing:0} 
+			p{word-wrap:break-word}			
+			
+			body {
+				width: 1200px;
+				margin: 0 auto;
+				font-family: "微软雅黑";
+				position: relative;
+			}
+			
+			#title {
+				background-color: #4B84CB;
+				height: 100px;
+				font-size: 30px;
+				line-height: 130px;
+				color: #FFFFFF;
+			}
+			
+			.glyphicon-plus, .glyphicon-search {
+				background-color: #FFFFFF;
+				color: #4B84CB;
+				width: 50px;
+				height: 50px;
+				border-radius: 40px;
+				position: absolute;
+				font-size: 24px;
+				text-align: center;
+				line-height: 44px;
+				top: 38px;
+				cursor: pointer;
+			}
+			
+			.glyphicon-plus:hover, .glyphicon-search:hover {
+				background-color: #1B4E8D;
+				color: #FFFFFF;
+				border: 2px solid #FFFFFF;
+			}
+			
+			#pre-insert {
+				right: 120px;
+			}
+			
+			#pre-search {
+				right: 60px;
+			}
+			
+			form {
+				width: 600px;
+				height: 50px;
+				margin: 15px auto;
+				display: none;
+			}
+			
+			#insert .form-control {
+				width: 68px;
+				display: inline-block;
+				margin-right: 6px;
+			}
+			
+			#search .form-control {
+				width: 460px;
+				display: inline-block;
+			}
+			
+			.table {
+				color: #535658;
+			}
+			
+			.table>tbody>tr>td {
+				text-align: center;
+				padding: 5px 0;
+				line-height: 40px;
+			}
+			
+			.table>tbody>tr>th {
+				text-align: center;
+				padding: 10px 0;
+				line-height: 30px;
+				font-weight: 600;
+			}
+			
+			.table tr {
+				height: 50px;
+			}
+			
+			.table .btn {
+				margin-bottom: 5px;
+			}
+			
+			#selected{
+				display: none;
+			}
+			
+			.table .form-control {
+				margin-left: auto;
+				margin-right: auto;
+				width: 60px;
+				height: 30px;
+			}
+			
+			.glyphicon-remove {
+				width: 18px;
+				height: 30px;
+				color: #999999;
+				cursor: pointer;
+			} 
+			
+			.glyphicon-remove:hover {
+				color: #4B84CB;
+			}
+			
+		</style>
+
+	</head>
+
+	<body onload="getReady()">
+		<h1 id="title" class="text-center">学 生 成 绩 管 理 系 统</h1>
+		<div class="glyphicon glyphicon-plus" id="pre-insert"></div>
+		<div class="glyphicon glyphicon-search" id="pre-search"></div>
+
+		<form id="insert">
+			<div class="form-group">
+				<input type="text" class="form-control"  name="stuName" placeholder="姓名" />
+				<input type="text" class="form-control"  name="stuId" placeholder="学号" />
+				<input type="text" class="form-control"  name="CHS" placeholder="语文" />
+				<input type="text" class="form-control"  name="MATH" placeholder="数学" />
+				<input type="text" class="form-control"  name="ENG" placeholder="英语" />
+				<input type="text" class="form-control"  name="IT" placeholder="编程" />
+				<span style="width: 13px;display: inline-block;"></span>
+				<input type="button" class="btn btn-default" onclick="addStudents([stuName.value, stuId.value, CHS.value, MATH.value, ENG.value, IT.value])" value="插入">
+				<input type="button" class="btn btn-default" onclick="empty(this)" value="重输">
+			</div>  
+		</form>
+
+		<form id="search">
+			<div class="form-group">
+				<input type="text" class="form-control" name="selectedId" placeholder="输入多个学号时请以空格隔开" />
+				<span style="width: 18px;display: inline-block;"></span>
+				<input type="button" class="btn btn-default" onclick="selectStudents(selectedId.value)" value="查询">
+				<input type="button" class="btn btn-default" onclick="goBack()" value="返回">
+			</div>
+		</form>
+
+		<table class="table" id="all">
+			<tr id="tr0">
+				<th>姓名</th>
+				<th>学号</th>
+				<th>语文</th>
+				<th>数学</th>
+				<th>英语</th>
+				<th>编程</th>
+				<th>平均分</th>
+				<th>总分</th>
+				<th>删除</th>
+			</tr>
+		</table>
+		
+		
+		<table class="table" id="selected">
+			<tr id="selected_tr0">
+				<th>姓名</th>
+				<th>学号</th>
+				<th>语文</th>
+				<th>数学</th>
+				<th>英语</th>
+				<th>编程</th>
+				<th>平均分</th>
+				<th>总分</th>
+				<th></th>
+			</tr>
+		</table>
+		
+		
+	</body>
+
+</html>
